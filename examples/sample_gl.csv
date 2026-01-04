@@ -1,0 +1,21 @@
+Account Number,Account Name,Description,Amount,Date,Vendor
+5000,Cost of Goods Sold - Flower,Wholesale flower purchase Q1,15000.00,2024-01-15,Grower Co
+5010,Cost of Goods Sold - Packaging,Product packaging materials,3500.00,2024-01-20,Pack Supply Inc
+5020,Cost of Goods Sold - Labels,Compliance labels,1200.00,2024-01-25,Label Print Co
+5100,Direct Production Labor,Cultivation labor January,8000.00,2024-01-31,Payroll
+6000,Inventory - Raw Materials,Hemp biomass purchase,12000.00,2024-02-05,Hemp Farms LLC
+7000,Rent Expense,Retail location rent February,5000.00,2024-02-01,Property Management Co
+7100,Utilities,Electric and water,1500.00,2024-02-15,Utility Company
+7200,Insurance,Business liability insurance,2500.00,2024-02-20,Insurance Co
+7300,Professional Fees,CPA services Q1,3000.00,2024-03-01,Accounting Firm
+7400,Legal Fees,Contract review,2000.00,2024-03-05,Law Firm
+8000,Marketing and Advertising,Social media ads,4500.00,2024-03-10,Ad Agency
+8100,Salaries - Sales,Retail staff salaries,12000.00,2024-03-31,Payroll
+8200,Employee Benefits,Health insurance,3500.00,2024-03-31,Benefits Provider
+8300,Travel Expense,Conference travel,2500.00,2024-04-05,Airlines
+8400,Office Supplies,General office supplies,500.00,2024-04-10,Office Depot
+8500,Software Subscriptions,Accounting software,300.00,2024-04-15,Software Co
+8600,Vehicle Expenses,Delivery vehicle fuel,800.00,2024-04-20,Gas Station
+8700,Consulting,Business consulting,5000.00,2024-04-25,Consultant LLC
+9000,Depreciation,Equipment depreciation,2000.00,2024-04-30,N/A
+9100,Bank Fees,Monthly bank fees,150.00,2024-04-30,Bank
