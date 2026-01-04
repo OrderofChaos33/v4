@@ -361,6 +361,9 @@ reports/
 *.pdf
 *.csv
 !sample_gl.csv
+test_*.pdf
+test_*.csv
+test_*.json
 
 # Cake - Uncomment if you are using it
 # tools/**
