@@ -88,6 +88,10 @@ class GLParserService:
                     else:
                         entry_data[field] = value
                 
+                # Ensure account_number is string
+                if entry_data.get('account_number') is not None:
+                    entry_data['account_number'] = str(entry_data['account_number'])
+                
                 # Ensure amount is numeric
                 if entry_data.get('amount') is not None:
                     entry_data['amount'] = float(entry_data['amount'])

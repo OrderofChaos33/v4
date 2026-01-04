@@ -2,7 +2,7 @@
 
 from enum import Enum
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class ClassificationType(str, Enum):
@@ -14,21 +14,20 @@ class ClassificationType(str, Enum):
 
 class GLEntry(BaseModel):
     """General Ledger Entry"""
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "account_number": "5000",
+            "account_name": "Product Costs",
+            "description": "Wholesale flower purchase",
+            "amount": 5000.00,
+            "date": "2024-01-15",
+            "vendor": "Grower Co"
+        }
+    })
+    
     account_number: str = Field(..., description="GL account number")
     account_name: str = Field(..., description="GL account name")
     description: Optional[str] = Field(None, description="Transaction description")
     amount: float = Field(..., description="Transaction amount")
     date: Optional[str] = Field(None, description="Transaction date")
     vendor: Optional[str] = Field(None, description="Vendor/payee name")
-    
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "account_number": "5000",
-                "account_name": "Product Costs",
-                "description": "Wholesale flower purchase",
-                "amount": 5000.00,
-                "date": "2024-01-15",
-                "vendor": "Grower Co"
-            }
-        }

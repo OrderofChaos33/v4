@@ -95,7 +95,7 @@ def test_full_workflow():
     # Get CSV report
     response = client.get(f"/api/report/{analysis_id}/csv")
     assert response.status_code == 200
-    assert response.headers["content-type"] == "text/csv"
+    assert "text/csv" in response.headers["content-type"]
     
     # Delete analysis
     response = client.delete(f"/api/report/{analysis_id}")

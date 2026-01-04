@@ -8,10 +8,10 @@ from typing import Optional
 import tempfile
 import os
 
-from .models.analysis import AnalysisRequest, AnalysisResult
-from .services.gl_parser import GLParserService
-from .services.classifier import ClassificationService
-from .services.report_generator import ReportGeneratorService
+from ..models.analysis import AnalysisRequest, AnalysisResult
+from ..services.gl_parser import GLParserService
+from ..services.classifier import ClassificationService
+from ..services.report_generator import ReportGeneratorService
 
 app = FastAPI(
     title="280E Expense Reclassification API",
