@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>280E Expense Classification Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .disclaimer {
+            background: #fff5f5;
+            border-left: 4px solid #fc8181;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #742a2a;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 600;
+        }
+        
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-item {
+            background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .summary-label {
+            font-size: 0.9em;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+        
+        .summary-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .download-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .btn-secondary {
+            background: #48bb78;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+        
+        .entries-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        
+        .entries-table th {
+            background: #2d3748;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .entries-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .entries-table tr:hover {
+            background: #f7fafc;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .badge-cogs {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .badge-deductible {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+        
+        .badge-non-deductible {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .needs-review {
+            color: #dd6b20;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>🍃 280E Expense Classification Tool</h1>
+            <p class="subtitle">Automated expense classification for cannabis operators per IRS Code Section 280E</p>
+            
+            <div class="disclaimer">
+                <strong>⚠️ Important Disclaimer:</strong> This tool provides decision-support only and does not constitute tax advice. 
+                All classifications should be reviewed by a qualified tax professional before filing.
+            </div>
+            
+            <div id="uploadForm">
+                <form id="glUploadForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file">Upload General Ledger CSV File *</label>
+                        <input type="file" id="file" name="file" accept=".csv" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company_name">Company Name</label>
+                        <input type="text" id="company_name" name="company_name" value="Cannabis Operator">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="state">State of Operation *</label>
+                        <select id="state" name="state" required>
+                            <option value="">Select a state</option>
+                            <option value="California">California</option>
+                            <option value="Colorado">Colorado</option>
+                            <option value="Washington">Washington</option>
+                            <option value="Oregon">Oregon</option>
+                            <option value="Nevada">Nevada</option>
+                            <option value="Massachusetts">Massachusetts</option>
+                            <option value="Michigan">Michigan</option>
+                            <option value="Illinois">Illinois</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="entity_structure">Entity Structure *</label>
+                        <select id="entity_structure" name="entity_structure" required>
+                            <option value="Single Entity">Single Entity</option>
+                            <option value="Multi-Entity">Multi-Entity</option>
+                            <option value="LLC">LLC</option>
+                            <option value="C-Corp">C-Corp</option>
+                            <option value="S-Corp">S-Corp</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tax_year">Tax Year/Period *</label>
+                        <input type="text" id="tax_year" name="tax_year" placeholder="e.g., 2024" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="schedule_status">Cannabis Schedule Status</label>
+                        <select id="schedule_status" name="schedule_status">
+                            <option value="Schedule I">Schedule I (Current - 280E Applies)</option>
+                            <option value="Schedule III">Schedule III (Post-Rescheduling)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn" id="submitBtn">Analyze GL Data</button>
+                </form>
+            </div>
+            
+            <div class="loading" id="loadingDiv">
+                <div class="spinner"></div>
+                <p>Processing your GL data...</p>
+            </div>
+        </div>
+        
+        <div class="card results" id="resultsDiv">
+            <h2>Classification Results</h2>
+            
+            <div class="summary-grid" id="summaryGrid"></div>
+            
+            <h3>Download Reports</h3>
+            <div class="download-buttons">
+                <button class="btn btn-secondary" id="downloadPdf">📄 Download PDF Report</button>
+                <button class="btn btn-secondary" id="downloadCsv">📊 Download CSV Export</button>
+                <button class="btn btn-secondary" id="downloadJson">💾 Download JSON Export</button>
+            </div>
+            
+            <h3 style="margin-top: 30px;">Expense Entries (Sample)</h3>
+            <div style="overflow-x: auto;">
+                <table class="entries-table" id="entriesTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Account</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Classification</th>
+                            <th>Confidence</th>
+                            <th>Review</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entriesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let sessionId = null;
+        
+        document.getElementById('glUploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingDiv = document.getElementById('loadingDiv');
+            const uploadForm = document.getElementById('uploadForm');
+            const resultsDiv = document.getElementById('resultsDiv');
+            
+            // Show loading
+            submitBtn.disabled = true;
+            loadingDiv.style.display = 'block';
+            
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Upload failed');
+                }
+                
+                const data = await response.json();
+                sessionId = data.session_id;
+                
+                // Display results
+                displaySummary(data.summary, data.needs_review_count);
+                
+                // Load detailed entries
+                await loadEntries(sessionId);
+                
+                // Show results
+                uploadForm.style.display = 'none';
+                resultsDiv.style.display = 'block';
+                
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                loadingDiv.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+        
+        function displaySummary(summary, needsReview) {
+            const summaryGrid = document.getElementById('summaryGrid');
+            summaryGrid.innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-label">Total Expenses</div>
+                    <div class="summary-value">$${summary.total_expenses.toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">COGS (Deductible)</div>
+                    <div class="summary-value">$${summary.cogs.toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Deductible Operating</div>
+                    <div class="summary-value">$${summary.deductible_operating.toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Non-Deductible</div>
+                    <div class="summary-value">$${summary.non_deductible.toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Estimated Tax Savings</div>
+                    <div class="summary-value">$${summary.estimated_tax_savings.toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Needs Review</div>
+                    <div class="summary-value needs-review">${needsReview}</div>
+                </div>
+            `;
+        }
+        
+        async function loadEntries(sessionId) {
+            const response = await fetch(`/api/session/${sessionId}`);
+            const data = await response.json();
+            
+            const tbody = document.getElementById('entriesTableBody');
+            tbody.innerHTML = '';
+            
+            // Show first 20 entries
+            const entries = data.entries.slice(0, 20);
+            
+            for (const entry of entries) {
+                const row = document.createElement('tr');
+                const classification = entry.override_classification || entry.classification;
+                const badgeClass = classification === 'COGS' ? 'badge-cogs' :
+                                  classification === 'Deductible' ? 'badge-deductible' :
+                                  'badge-non-deductible';
+                
+                row.innerHTML = `
+                    <td>${entry.date.substring(0, 10)}</td>
+                    <td>${entry.account_code}</td>
+                    <td>${entry.description.substring(0, 40)}...</td>
+                    <td>$${entry.amount.toLocaleString('en-US', {maximumFractionDigits: 0})}</td>
+                    <td><span class="badge ${badgeClass}">${classification}</span></td>
+                    <td>${entry.confidence_score ? entry.confidence_score.toFixed(0) + '%' : 'N/A'}</td>
+                    <td>${entry.needs_review ? '⚠️' : '✓'}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            if (data.entries.length > 20) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="7" style="text-align: center; font-style: italic;">... and ${data.entries.length - 20} more entries. Download full report for complete details.</td>`;
+                tbody.appendChild(row);
+            }
+        }
+        
+        document.getElementById('downloadPdf').addEventListener('click', () => {
+            window.location.href = `/api/session/${sessionId}/report/pdf`;
+        });
+        
+        document.getElementById('downloadCsv').addEventListener('click', () => {
+            window.location.href = `/api/session/${sessionId}/report/csv`;
+        });
+        
+        document.getElementById('downloadJson').addEventListener('click', () => {
+            window.location.href = `/api/session/${sessionId}/report/json`;
+        });
+    </script>
+</body>
+</html>
